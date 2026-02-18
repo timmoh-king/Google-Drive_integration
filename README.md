@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+# Item View React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application for viewing and managing Monday.com items with Google Drive integration.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+This project uses a **backend/client** folder structure:
 
-### `npm start`
+```
+item-view-reactjs/
+├── backend/          # Express.js proxy server for Monday.com file downloads
+│   ├── proxy-server.js
+│   ├── package.json
+│   └── .env          # Backend environment variables
+└── client/           # React application
+    ├── src/
+    ├── public/
+    ├── package.json
+    └── .env          # Client environment variables
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Quick Start
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 1. Backend Setup
 
-### `npm test`
+```bash
+cd backend
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Create a `.env` file in the `backend/` folder:
 
-### `npm run build`
+```env
+REACT_APP_MONDAY_USER_API_KEY=your_monday_api_key
+PROXY_PORT=3001
+CLIENT_URL=http://localhost:3000
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Start the backend server:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run proxy
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Client Setup
 
-### `npm run eject`
+```bash
+cd client
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Create a `.env` file in the `client/` folder:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+REACT_APP_MONDAY_USER_API_KEY=your_monday_api_key
+REACT_APP_PROXY_URL=http://localhost:3001
+REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
+REACT_APP_GOOGLE_API_KEY=your_google_api_key
+REACT_APP_ITEM_ID=your_item_id
+REACT_APP_BOARD_ID=your_board_id
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Start the React app:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm start
+```
 
-## Learn More
+## Running the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You need **two terminal windows** running simultaneously:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Terminal 1 - Backend:**
+```bash
+cd backend
+npm run proxy
+```
 
-### Code Splitting
+**Terminal 2 - Client:**
+```bash
+cd client
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Backend proxy server: `http://localhost:3001`
+- React application: `http://localhost:3000`
 
-### Analyzing the Bundle Size
+## Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- View and manage Monday.com items
+- Inline editing of item fields
+- Google Drive integration for file uploads
+- Status management with visual indicators
+- File download from Monday.com (via backend proxy)
 
-### Making a Progressive Web App
+## Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Backend (.env in backend/)
 
-### Advanced Configuration
+- `REACT_APP_MONDAY_USER_API_KEY` - Your Monday.com API key
+- `PROXY_PORT` - Port for the proxy server (default: 3001)
+- `CLIENT_URL` - URL of your React app for CORS (default: http://localhost:3000)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Client (.env in client/)
 
-### Deployment
+- `REACT_APP_MONDAY_USER_API_KEY` - Your Monday.com API key
+- `REACT_APP_PROXY_URL` - Backend proxy server URL (default: http://localhost:3001)
+- `REACT_APP_GOOGLE_CLIENT_ID` - Google OAuth Client ID
+- `REACT_APP_GOOGLE_API_KEY` - Google API Key
+- `REACT_APP_ITEM_ID` - Monday.com item ID (optional, for development)
+- `REACT_APP_BOARD_ID` - Monday.com board ID
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Troubleshooting
 
-### `npm run build` fails to minify
+### CORS Errors
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If you see CORS errors, make sure:
+1. The backend proxy server is running
+2. `CLIENT_URL` in backend `.env` matches your React app URL
+3. `REACT_APP_PROXY_URL` in client `.env` matches your backend server URL
+
+### File Download Errors
+
+If file downloads fail:
+1. Verify the backend proxy server is running
+2. Check that `REACT_APP_MONDAY_USER_API_KEY` is set correctly in both backend and client `.env` files
+3. Check the backend console for error messages
+
+## Production Deployment
+
+For production:
+1. Deploy the backend to a hosting service (Heroku, Railway, AWS, etc.)
+2. Deploy the client to a hosting service (Vercel, Netlify, etc.)
+3. Update environment variables in both deployments
+4. Update `REACT_APP_PROXY_URL` in client to point to your deployed backend
+5. Update `CLIENT_URL` in backend to point to your deployed client
+
+## Documentation
+
+- Backend proxy setup: See `backend/PROXY_SETUP.md`
+- Google Drive integration: See `client/src/services/googleDrive.js`
+# Google-Drive_integration
